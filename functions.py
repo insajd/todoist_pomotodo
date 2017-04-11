@@ -1,6 +1,7 @@
 #-*-coding:utf-8 -*-
-import datetime,pytz,pprint
-tz = pytz.timezone('Asia/Shanghai')
+import datetime,pytz
+import re #outlook fix
+tz = pytz.timezone('Europe/Riga')
 today_dttm=datetime.datetime.now(tz)
 today_date_str=today_dttm.date()
 today_todo_name={}
@@ -9,7 +10,7 @@ today_todo_id,item_para_dict,=[],{}
 #更新todoist 数据,获得今日所有的todo(未完成)
 def update_todoist(api):
     ### *** list all projects *** ###
-    global parent_project_id, project_name
+    global parent_project_id, project_name, labels_name
     projects = api.projects.all()
 
     projects_id = {} #give name produce id
@@ -32,6 +33,15 @@ def update_todoist(api):
         else:
             parent_project_id.update({id: id})
 
+    labels = api.labels.all()
+    labels_id = {} #give name produce id
+    labels_name = {} # give id produce name
+    for i in labels:
+        name = i['name']
+        id = i['id']
+        labels_id.update({name: id})
+        labels_name.update({id: name})
+
     global item_para_dict, item_dict,today_todo_id
     ### *** list all items *** ###
     items = api.items.all()
@@ -44,12 +54,14 @@ def update_todoist(api):
         item_order = i['item_order']
         deadline=i['due_date_utc']
         checked=i['checked']
+        item_labels=i['labels']
 
         ### update item_para_dict
         item_para_dict.update({id: {'name': name,
                                     'project_id': project_id,
                                     'checked':checked,
-                                    'item_order':item_order}})
+                                    'item_order':item_order,
+                                    'labels':item_labels}})
 
         ### update today_todo_id (get all today ids complete or not)
         if not deadline in [None,"",'None'] :
@@ -155,12 +167,25 @@ def get_full_todo_for_pomotodo(id):
             todo_samepart=thetodo #same parts is the project tags
             maxlen= len(max(thelist,key=len))
 
+            # produce label based task
+            for label_id in item_para_dict[id]['labels']:
+                todo_samepart += ' ' + '#' + labels_name[label_id]
+
             for list in thelist:
                 if len(list) ==maxlen:
                     todo=todo_samepart
                     checked=0
                     for id in list:
                         idname=item_para_dict[id]['name']
+                        # outlook fix>
+                        regex = r"\[\[.[^,]*, (.*)\]\]"
+                        matches = re.finditer(regex, idname)
+                        for matchNum, match in enumerate(matches):
+                            matchNum = matchNum + 1
+                            for groupNum in range(0, len(match.groups())):
+                                groupNum = groupNum + 1
+                                idname = match.group(groupNum)
+                        # outlook fix<
                         todo += ' | ' + idname
                         if item_para_dict[id]['checked']==1:
                             checked=1

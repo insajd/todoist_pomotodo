@@ -10,7 +10,7 @@ import todoist
 from functions import *
 from pomotodo_api import *
 
-token = 'paste your todoist token here'
+token = '[TODOIST_TOKEN]'
 api = todoist.TodoistAPI(token)
 
 ###  **********  pomotodo update todoist
