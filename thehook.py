@@ -8,10 +8,17 @@ sys.setdefaultencoding('UTF-8')
 print "Content-type:text/html"
 import todoist
 from functions import *
+import pomotodo_api
 from pomotodo_api import *
 
-token = '[TODOIST_TOKEN]'
+# setup
+token = 'todoist_token'
+pomotodo_token = 'pomotodo_token'
+timezone = 'Europe/Riga'
+# +change timezone in functions.py file
+
 api = todoist.TodoistAPI(token)
+pomotodo_api.__init__(pomotodo_token, timezone)
 
 ###  **********  pomotodo update todoist
 

@@ -1,6 +1,9 @@
 #-*-coding:utf-8 -*-
-token = '[POMOTODO_TOKEN]'
-token = 'token '+token
+def __init__(pomotodo_token, tzone):
+    global token, timezone
+    token = 'token '+pomotodo_token
+    timezone = tzone
+
 current_todos={}
 
 def pomotodo_get_completed_todos_from_todoist():
@@ -86,7 +89,7 @@ def pomotodo_addtodos_from_todoist(today_todo_name,deadline,item_para_dict):
     reload(sys)  # Reload does the trick!
     sys.setdefaultencoding('UTF-8')
     import pytz,datetime
-    tz = pytz.timezone('Europe/Riga')
+    tz = pytz.timezone(timezone)
     today_dttm=datetime.datetime.now(tz)
     nodeadline=False
 

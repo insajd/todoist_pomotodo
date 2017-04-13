@@ -7,7 +7,7 @@ today_date_str=today_dttm.date()
 today_todo_name={}
 today_todo_id,item_para_dict,=[],{}
 
-#更新todoist 数据,获得今日所有的todo(未完成)
+# Update todoist data to get all of today's todos (unfinished)
 def update_todoist(api):
     ### *** list all projects *** ###
     global parent_project_id, project_name, labels_name
