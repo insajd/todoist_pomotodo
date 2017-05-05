@@ -159,18 +159,14 @@ def pomotodo_todoist_del_extra_todos(today_todo_name,item_para_dict):
 
         if uuid in todel_repetitive_uuid:
             data={
-                # 'uuid':uuid,
-                'notice':'',
-                'completed':'true',
+                'uuid':uuid
             }
-            response = requests.patch('https://api.pomotodo.com/1/todos/' + uuid,json=data, headers={'Authorization': token})
+            response = requests.delete('https://api.pomotodo.com/1/todos/' + uuid,json=data, headers={'Authorization': token})
             print 'todo deleted', response.status_code, uuid
 
         if not int(id) in today_todo_name_id:
             data={
-                # 'uuid':uuid,
-                'notice':'',
-                'completed':'true',
+                'uuid':uuid
             }
-            response = requests.patch('https://api.pomotodo.com/1/todos/' + uuid,json=data, headers={'Authorization': token})
+            response = requests.delete('https://api.pomotodo.com/1/todos/' + uuid,json=data, headers={'Authorization': token})
             print 'todo deleted', response.status_code, uuid
